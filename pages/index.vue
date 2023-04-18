@@ -1,7 +1,6 @@
 <script setup>
 import { db } from "@/firebase/firebase";
-import "vue3-carousel/dist/carousel.css";
-import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 // => value
 
 // store
@@ -36,13 +35,10 @@ let names = [];
 
 // => methods
 
-const checkId = async (event) => {
-  // initialize error animation value
-  goVibrateAnimation.value = false;
-
+const checkId = async () => {
   // empty is error
   if (text.value === "") {
-    textError(event);
+    textError();
     return;
   }
 
@@ -54,7 +50,7 @@ const checkId = async (event) => {
     .then((val) => {
       // Not Getting => error
       if (val.data() === undefined) {
-        textError(event);
+        textError();
         return;
       }
 
@@ -76,9 +72,15 @@ const checkId = async (event) => {
 };
 
 // text Error Process(visual)
-const textError = (event) => {
+const textError = () => {
   hasIdError.value = true;
+
   goVibrateAnimation.value = true;
+
+  // initialize
+  setTimeout(() => {
+    goVibrateAnimation.value = false;
+  }, "500");
 };
 </script>
 
@@ -109,11 +111,19 @@ const textError = (event) => {
     <section
       class="h-1/2 md:h-screen md:w-1/2 md:flex md:flex-col md:justify-center md:items-center"
     >
-      <h1 class="font-serif font-bold text-2xl md:text-2xl lg:text-4xl">
-        聞きたいコト、ありまうす
+      <h1
+        class="font-serif font-bold text-2xl md:text-2xl lg:text-4xl text-center"
+      >
+        聞きたいコトありマウス
       </h1>
-      <div class="flex flex-col items-center w-full h-full pt-4 md:h-auto">
-        <p class="text-sm font-serif md:text-base md:mt-4">
+      <div
+        class="flex flex-col items-center w-full h-full pt-4 md:h-auto"
+        :class="{ 'pt-0': successId }"
+      >
+        <p
+          class="text-sm font-serif md:text-base md:mt-4"
+          :class="{ hidden: successId }"
+        >
           聞きたいコト、気軽に質問しませんか？
         </p>
 
@@ -123,7 +133,6 @@ const textError = (event) => {
           :class="{ 'animate-slide-out-left': successId }"
         >
           <p
-            id="errorText"
             class="mr-auto my-2 text-red-500 text-sm font-bold invisible"
             :class="[
               {
@@ -142,7 +151,7 @@ const textError = (event) => {
             class="w-[300px] py-4 pl-2 rounded-lg text-lg border-gray-100 border-2 shadow-sm outline-none"
             placeholder="管理者から共有されたIDを入力"
           />
-          <form-button @clickEvent="checkId($event)">Go!! </form-button>
+          <form-button @clickEvent="checkId()">Go!! </form-button>
           <p
             class="text-lg pt-4 border-b-[1px] border-gray-400 w-[300px] text-gray-400"
           >
@@ -150,7 +159,7 @@ const textError = (event) => {
           </p>
         </div>
         <div
-          class="flex-col items-center w-full gap-y-4 hidden"
+          class="flex-col items-center w-full gap-y-4 hidden h-full"
           id="reply-input-form"
           :class="{ 'animate-slide-in-right': idInputFormAnimateEndFlg }"
         >
@@ -176,9 +185,8 @@ const textError = (event) => {
             <option v-for="name in names" key="name">{{ name }}</option>
           </select>
 
-          <input
-            type="text"
-            class="w-[300px] py-4 pl-2 rounded-lg text-sm border-gray-100 border-2 shadow-sm outline-none"
+          <textarea
+            class="w-[300px] py-2 pl-2 h-[60px] md:h-[100px] rounded-lg text-sm border-gray-100 border-2 shadow-sm outline-none resize-none"
             placeholder="質問したいコトは？"
           />
           <button
