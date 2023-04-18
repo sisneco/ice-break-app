@@ -9,13 +9,17 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "@nuxtjs/tailwindcss": "^6.6.5",
     "nuxt": "^3.3.3"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.7",
     "firebase": "^9.19.1",
-    "pinia": "^2.0.33"
+    "pinia": "^2.0.33",
+    "vue3-carousel": "^0.3.0"
   },
   "overrides": {
     "vue": "latest"

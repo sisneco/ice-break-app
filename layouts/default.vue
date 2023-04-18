@@ -1,5 +1,5 @@
 <template>
-  <div class="md:flex md:w-screen">
+  <div class="md:flex md:w-screen overflow-hidden">
     <div
       class="bg-sky-200 fixed bottom-0 left-0 w-screen md:w-[15vw] md:min-w-[200px] md:h-screen md:static md:shadow-md md:rounded-r-2xl"
     >
@@ -34,6 +34,18 @@
         <li class="w-1/4 text-center">a</li>
       </ul>
     </div>
-    <slot></slot>
+    <slot />
   </div>
 </template>
+
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.8s;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  transform: translateX(1000px);
+}
+</style>
