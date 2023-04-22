@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { db, rdb } from "~/firebase/firebase";
 
 export const questionStore = defineStore("questionStore", {
   state: () => ({
@@ -23,7 +22,6 @@ export const questionStore = defineStore("questionStore", {
       this.id = id;
     },
     setGroupsData(groupsData) {
-      console.log(groupsData);
       this.groupsData = groupsData;
     },
   },
