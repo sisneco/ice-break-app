@@ -10,6 +10,8 @@ const firebaseConfig = {
   storageBucket: "ice-break-app.appspot.com",
   messagingSenderId: "269878406421",
   appId: "1:269878406421:web:20674704fd07a12d454d1c",
+  databaseURL:
+    "https://ice-break-app-default-rtdb.asia-southeast1.firebasedatabase.app/",
 };
 
 firebase.initializeApp(firebaseConfig);

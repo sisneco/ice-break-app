@@ -28,10 +28,6 @@
             >Question
           </span>
         </NavigationBarTagLi>
-
-        <li class="w-1/4 text-center"></li>
-        <li class="w-1/4 text-center">a</li>
-        <li class="w-1/4 text-center">a</li>
       </ul>
     </div>
     <slot />

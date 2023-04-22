@@ -1,6 +1,5 @@
 <script setup>
-import { db } from "@/firebase/firebase";
-import { faL } from "@fortawesome/free-solid-svg-icons";
+import { db, rdb } from "@/firebase/firebase";
 // => value
 
 // store
@@ -17,7 +16,9 @@ onMounted(() => {
 });
 
 // id
-const text = ref("");
+const textId = ref("");
+const replyText = ref("");
+const replyErrorText = ref("宛先または聞きたいコトが入力されていません！");
 // errorBoolean => Text
 const hasIdError = ref(false);
 const hasReplyError = ref(false);
@@ -34,10 +35,9 @@ const selected = ref("");
 let names = [];
 
 // => methods
-
 const checkId = async () => {
   // empty is error
-  if (text.value === "") {
+  if (textId.value === "") {
     textError();
     return;
   }
@@ -45,7 +45,7 @@ const checkId = async () => {
   // firebase access
   await db
     .collection("groups")
-    .doc(text.value)
+    .doc(textId.value)
     .get()
     .then((val) => {
       // Not Getting => error
@@ -74,13 +74,46 @@ const checkId = async () => {
 // text Error Process(visual)
 const textError = () => {
   hasIdError.value = true;
-
   goVibrateAnimation.value = true;
 
   // initialize
   setTimeout(() => {
     goVibrateAnimation.value = false;
   }, "500");
+};
+
+const replyMessage = () => {
+  if (hasErrorReplyText()) {
+    return;
+  }
+
+  rdb.ref(textId.value).push({
+    text: replyText.value,
+  });
+};
+
+const hasErrorReplyText = () => {
+  const commonErrorProcess = (text) => {
+    replyErrorText.value = text;
+    hasReplyError.value = true;
+
+    goVibrateAnimation.value = true;
+    setTimeout(() => {
+      goVibrateAnimation.value = false;
+    }, "500");
+  };
+
+  if (selected.value === "") {
+    commonErrorProcess("宛先または聞きたいコトが入力されていません！");
+    return true;
+  }
+
+  if (replyText.value.length > 20) {
+    commonErrorProcess("聞きたいコトは20文字以内で入力してください！");
+    return true;
+  }
+
+  return false;
 };
 </script>
 
@@ -92,14 +125,14 @@ const textError = () => {
       class="h-1/2 rounded-b-[150px] w-full md:w-1/2 mb-8 relative md:h-full md:mb-0"
     >
       <p
-        class="bg-orange-100 w-full h-[95%] rounded-b-[150px] md:rounded-none md:h-full md:flex md:justify-center md:items-center md:flex-col md:bg-gradient-to-b from-orange-200 via-orange-100 to-orange-50"
+        class="w-full h-[95%] rounded-b-[150px] md:rounded-none md:h-full md:flex md:justify-center md:items-center md:flex-col bg-gradient-to-b from-orange-200 via-orange-100 to-orange-50"
       >
         <img
           src="@/assets/img/dummy.jpg"
           alt="dummy"
           class="rounded-full w-[150px] h-[150px] absolute -bottom-8 left-[calc(50%_-_75px)] md:left-[calc(50%_-_150px)] md:w-[30vw] md:h-[30vw] md:bottom-1/2 md:static"
         />
-        <span class="text-gray-500 text-lg font-medium hidden md:inline"
+        <span class="text-black text-base font-medium hidden md:inline mt-2"
           >出会ってばかりだと少し恥ずかしい<br />
           そんなコト、ありませんか？ <br />
           このサイトは そんな悩みを少しでも解決するために<br />
@@ -109,7 +142,7 @@ const textError = () => {
       </p>
     </section>
     <section
-      class="h-1/2 md:h-screen md:w-1/2 md:flex md:flex-col md:justify-center md:items-center"
+      class="h-1/2 md:h-screen md:w-1/2 md:flex md:flex-col md:items-center md:mt-[55vh]"
     >
       <h1
         class="font-serif font-bold text-2xl md:text-2xl lg:text-4xl text-center"
@@ -117,13 +150,10 @@ const textError = () => {
         聞きたいコトありマウス
       </h1>
       <div
-        class="flex flex-col items-center w-full h-full pt-4 md:h-auto"
+        class="flex flex-col items-center w-full h-[210px] pt-4 md:h-auto"
         :class="{ 'pt-0': successId }"
       >
-        <p
-          class="text-sm font-serif md:text-base md:mt-4"
-          :class="{ hidden: successId }"
-        >
+        <p class="text-sm font-serif md:text-base md:mt-4">
           聞きたいコト、気軽に質問しませんか？
         </p>
 
@@ -147,25 +177,20 @@ const textError = () => {
           </p>
           <input
             type="text"
-            v-model="text"
+            v-model="textId"
             class="w-[300px] py-4 pl-2 rounded-lg text-lg border-gray-100 border-2 shadow-sm outline-none"
             placeholder="管理者から共有されたIDを入力"
           />
           <form-button @clickEvent="checkId()">Go!! </form-button>
-          <p
-            class="text-lg pt-4 border-b-[1px] border-gray-400 w-[300px] text-gray-400"
-          >
-            > Admin login
-          </p>
         </div>
         <div
-          class="flex-col items-center w-full gap-y-4 hidden h-full"
+          class="flex-col items-center w-[300px] gap-y-2 hidden h-full justify-center md:gap-y-4 mt-2"
           id="reply-input-form"
           :class="{ 'animate-slide-in-right': idInputFormAnimateEndFlg }"
         >
           <p
             id="errorText"
-            class="mr-auto my-2 text-red-500 text-sm font-bold invisible"
+            class="mr-auto text-red-500 text-sm font-bold invisible"
             :class="[
               {
                 'animate-vibrate-1': goVibrateAnimation,
@@ -175,22 +200,25 @@ const textError = () => {
               },
             ]"
           >
-            IDが異なっています！！
+            {{ replyErrorText }}
           </p>
           <select
-            class="w-[300px] py-4 pl-2 rounded-lg text-sm border-gray-100 border-2 shadow-sm mt text-gray-500 outline-none"
+            class="w-[300px] py-3 pl-2 rounded-lg text-sm border-gray-100 border-2 shadow-sm mt text-gray-500 outline-none"
             v-model="selected"
           >
             <option disabled value="">宛先を選んでください</option>
             <option v-for="name in names" key="name">{{ name }}</option>
           </select>
-
-          <textarea
-            class="w-[300px] py-2 pl-2 h-[60px] md:h-[100px] rounded-lg text-sm border-gray-100 border-2 shadow-sm outline-none resize-none"
-            placeholder="質問したいコトは？"
+          <input
+            type="text"
+            v-model="replyText"
+            class="w-[300px] py-3 pl-2 rounded-lg text-sm border-gray-100 border-2 shadow-sm outline-none"
+            placeholder="聞きたいコトはなんですか？"
           />
+
           <button
             class="bg-sky-400 text-white text-lg font-bold w-[100px] rounded py-2 mt-4 ml-[196px] shadow"
+            @click="replyMessage"
           >
             Reply
           </button>
