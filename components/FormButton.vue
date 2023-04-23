@@ -4,12 +4,12 @@ const emit = defineEmits();
 
 let btnElement = null;
 
-onMounted(() => {
-  btnElement = document.getElementById("btn");
-});
-
 // => methods
 const clickProcess = async () => {
+  if (btnElement === null) {
+    btnElement = document.getElementById("btn");
+  }
+
   const btnClass = btnElement.classList;
 
   btnClass.add("bg-sky-300");
