@@ -1,47 +1,41 @@
 <template>
-  <div class="md:flex md:w-screen overflow-hidden">
+  <div class="md:flex md:w-screen md:flex-col overflow-hidden">
     <div
-      class="bg-sky-200 fixed bottom-0 left-0 w-screen md:w-[15vw] md:min-w-[200px] md:h-screen md:static md:shadow-md md:rounded-r-2xl"
+      class="bg-sky-200 fixed bottom-0 left-0 w-screen md:w-screen md:h-[75px] md:static md:shadow-md"
     >
       <ul
-        class="flex justify-center flex-1 w-full h-[10vh] items-center md:h-full md:flex-col md:items-start md:pl-2 md:justify-start"
+        class="flex justify-center flex-1 w-full items-center h-[10vh] md:h-full md:items-start md:pl-2 md:justify-start md:w-full"
       >
-        <h1 class="hidden md:block font-bold font-serif text-4xl py-4 ml-2">
+        <h1 class="hidden md:block font-bold font-serif text-4xl py-4 mx-2">
           IceBreak
         </h1>
-        <li>
-          <h2
-            class="hidden md:block text-2xl font-sans font-semibold text-gray-500"
-          >
-            Menu
-          </h2>
-        </li>
         <NavigationBarTagLi>
-          <font-awesome-icon :icon="['fas', 'house']" class="text-2xl" />
-          <span class="hidden md:inline md:pl-2 text-4xl font-serif">
-            Home
-          </span>
+          <NuxtLink to="/">
+            <font-awesome-icon :icon="['fas', 'house']" class="text-2xl" />
+            <span class="hidden md:inline md:pl-2 text-2xl font-serif">
+              Home
+            </span>
+          </NuxtLink>
         </NavigationBarTagLi>
         <NavigationBarTagLi>
           <font-awesome-icon :icon="['fas', 'ear-listen']" class="text-2xl" />
-          <span class="hidden md:inline md:pl-2 text-4xl font-serif"
+          <span class="hidden md:inline md:pl-2 text-2xl font-serif"
             >Question
           </span>
+        </NavigationBarTagLi>
+        <NavigationBarTagLi>
+          <NuxtLink to="/admin">
+            <font-awesome-icon
+              :icon="['fas', 'person-circle-check']"
+              class="text-2xl"
+            />
+            <span class="hidden md:inline md:pl-2 text-2xl font-serif">
+              Admin
+            </span>
+          </NuxtLink>
         </NavigationBarTagLi>
       </ul>
     </div>
     <slot />
   </div>
 </template>
-
-<style>
-.page-enter-active,
-.page-leave-active {
-  transition: all 0.8s;
-}
-.page-enter-from,
-.page-leave-to {
-  opacity: 0;
-  transform: translateX(1000px);
-}
-</style>

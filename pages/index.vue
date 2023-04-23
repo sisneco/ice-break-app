@@ -9,12 +9,6 @@ const questionAppStore = questionStore();
 let idInputFormElement = null;
 let replyInputFormElement = null;
 
-onMounted(() => {
-  idInputFormElement = document.getElementById("id-input-form");
-
-  replyInputFormElement = document.getElementById("reply-input-form");
-});
-
 // id
 const textId = ref("");
 const replyText = ref("");
@@ -36,6 +30,14 @@ let names = [];
 
 // => methods
 const checkId = async () => {
+  if (idInputFormElement === null) {
+    idInputFormElement = document.getElementById("id-input-form");
+  }
+
+  if (replyInputFormElement === null) {
+    replyInputFormElement = document.getElementById("reply-input-form");
+  }
+
   // empty is error
   if (textId.value === "") {
     textError();
@@ -119,41 +121,38 @@ const hasErrorReplyText = () => {
 
 <template>
   <div
-    class="flex flex-col h-[90vh] md:w-[calc(calc(100vw_-_160px))] items-center md:flex-row-reverse md:h-screen"
+    class="flex flex-col h-[calc(calc(100vh_-_75px))] md:w-screen items-center md:flex-row-reverse"
   >
     <section
-      class="h-1/2 rounded-b-[150px] w-full md:w-1/2 mb-8 relative md:h-full md:mb-0"
+      class="h-1/2 rounded-b-[150px] w-full md:w-[60%] mb-8 relative md:h-full md:mb-0 bg-gradient-to-b from-orange-200 via-orange-100 to-orange-50 md:rounded-none md:flex md:flex-col md:gap-y-2"
     >
+      <img
+        src="@/assets/img/questionImg.jpg"
+        alt="dummy"
+        class="rounded-full w-[150px] h-[150px] absolute -bottom-8 left-[calc(50%_-_75px)] md:static md:w-[35vh] md:h-[35vh]"
+      />
+      <img
+        src="@/assets/img/questionImg2.jpg"
+        alt="dummy"
+        class="hidden rounded-full w-[30vh] h-[30vh] ml-auto mr-[200px] md:inline"
+      />
       <p
-        class="w-full h-[95%] rounded-b-[150px] md:rounded-none md:h-full md:flex md:justify-center md:items-center md:flex-col bg-gradient-to-b from-orange-200 via-orange-100 to-orange-50"
+        class="text-gray-900 text-xl hidden mt-8 font-serif mr-[400px] md:inline"
       >
-        <img
-          src="@/assets/img/dummy.jpg"
-          alt="dummy"
-          class="rounded-full w-[150px] h-[150px] absolute -bottom-8 left-[calc(50%_-_75px)] md:left-[calc(50%_-_150px)] md:w-[30vw] md:h-[30vw] md:bottom-1/2 md:static"
-        />
-        <span class="text-black text-base font-medium hidden md:inline mt-2"
-          >出会ってばかりだと少し恥ずかしい<br />
-          そんなコト、ありませんか？ <br />
-          このサイトは そんな悩みを少しでも解決するために<br />
-          作成したアイスブレイクApp第1弾となります！ <br />
-          ぜひ 仲間やお友達と更に仲良くなってください！！
-        </span>
+        出会ってばかりだと少し恥ずかしい... そんなコト、ありませんか？ <br />
+        このサイトは そんな悩みを少しでも解決するために<br />
+        作成したアイスブレイクApp第1弾となります！ <br />
+        ぜひ 仲間やお友達と更に仲良くなってください！！
       </p>
     </section>
     <section
-      class="h-1/2 md:h-screen md:w-1/2 md:flex md:flex-col md:items-center md:mt-[55vh]"
+      class="h-1/2 md:h-screen md:w-[40%] md:flex md:flex-col md:items-center md:justify-center"
     >
-      <h1
-        class="font-serif font-bold text-2xl md:text-2xl lg:text-4xl text-center"
-      >
-        聞きたいコトありマウス
-      </h1>
       <div
         class="flex flex-col items-center w-full h-[210px] pt-4 md:h-auto"
         :class="{ 'pt-0': successId }"
       >
-        <p class="text-sm font-serif md:text-base md:mt-4">
+        <p class="text-sm font-serif md:text-base lg:text-xl">
           聞きたいコト、気軽に質問しませんか？
         </p>
 
@@ -163,7 +162,7 @@ const hasErrorReplyText = () => {
           :class="{ 'animate-slide-out-left': successId }"
         >
           <p
-            class="mr-auto my-2 text-red-500 text-sm font-bold invisible"
+            class="mr-auto my-2 text-red-500 text-sm md:text-xl invisible"
             :class="[
               {
                 'animate-vibrate-1': goVibrateAnimation,
@@ -181,7 +180,9 @@ const hasErrorReplyText = () => {
             class="w-[300px] py-4 pl-2 rounded-lg text-lg border-gray-100 border-2 shadow-sm outline-none"
             placeholder="管理者から共有されたIDを入力"
           />
-          <form-button @clickEvent="checkId()">Go!! </form-button>
+          <form-button @clickEvent="checkId()" class="md:ml-0 md:mt-8 md:w-full"
+            >Go!!
+          </form-button>
         </div>
         <div
           class="flex-col items-center w-[300px] gap-y-2 hidden h-full justify-center md:gap-y-4 mt-2"
