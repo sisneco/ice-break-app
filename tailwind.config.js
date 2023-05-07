@@ -9,6 +9,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        notojp: ["Noto Sans JP"],
+        cormorant: ["Cormorant Garamond, serif"],
+      },
       keyframes: {
         // vibrate
         "vibrate-1": {
