@@ -54,6 +54,16 @@ module.exports = {
             opacity: "0",
           },
         },
+        "text-focus-in": {
+          "0%": {
+            filter: "blur(12px)",
+            opacity: "0",
+          },
+          to: {
+            filter: "blur(0)",
+            opacity: "1",
+          },
+        },
       },
       animation: {
         "vibrate-1": "vibrate-1 0.3s linear   both",
@@ -61,6 +71,8 @@ module.exports = {
           "slide-in-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940)   forwards",
         "slide-out-left":
           "slide-out-left 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530)   both",
+        "text-focus-in":
+          "text-focus-in 1s cubic-bezier(0.550, 0.085, 0.680, 0.530)   both",
       },
     },
   },

@@ -8,6 +8,8 @@ const loginPassword = ref("");
 const hasIdError = ref("");
 const goVibrateAnimation = ref("");
 
+const router = useRouter();
+
 definePageMeta({
   middleware: ["admin"],
 });
@@ -23,6 +25,7 @@ const login = () => {
     .signInWithEmailAndPassword(loginId.value, loginPassword.value)
     .then((result) => {
       router.push("/adminPage");
+      return;
     })
     .catch((err) => {
       textError();
