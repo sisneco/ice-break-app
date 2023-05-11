@@ -90,9 +90,16 @@ const replyMessage = () => {
     return;
   }
 
-  rdb.ref(textId.value).push({
-    text: replyText.value,
-  });
+  rdb
+    .ref(textId.value)
+    .push({
+      text: replyText.value,
+      name: selected.value,
+    })
+    .then(() => {
+      replyText.value = "";
+      selected.value = "";
+    });
 };
 
 const hasErrorReplyText = () => {
@@ -106,7 +113,7 @@ const hasErrorReplyText = () => {
     }, "500");
   };
 
-  if (selected.value === "") {
+  if (selected.value === "" || replyText.value === "") {
     commonErrorProcess("宛先または聞きたいコトが入力されていません！");
     return true;
   }
@@ -144,6 +151,11 @@ const hasErrorReplyText = () => {
     <section
       class="h-1/2 md:h-full md:w-[40%] md:flex md:flex-col md:items-center md:justify-center"
     >
+      <div
+        class="balloon1 fixed top-[25%] left-1/6 font-notojp font-bold invisible"
+      >
+        <p>送信に成功しました！</p>
+      </div>
       <h1 class="hidden md:block font-cormorant text-6xl">QuestionApp</h1>
       <div
         class="flex flex-col items-center w-full h-[210px] pt-4 md:h-auto"
@@ -229,5 +241,32 @@ const hasErrorReplyText = () => {
 <style>
 .error-text {
   visibility: inherit;
+}
+
+.balloon1 {
+  display: inline-block;
+  margin: 1.5em 0;
+  padding: 7px 10px;
+  min-width: 120px;
+  max-width: 100%;
+  color: #555;
+  font-size: 16px;
+  background: #e0edff;
+  border-radius: 15px;
+}
+
+.balloon1:before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -15px;
+  border: 15px solid transparent;
+  border-top: 15px solid #e0edff;
+}
+
+.balloon1 p {
+  margin: 0;
+  padding: 0;
 }
 </style>

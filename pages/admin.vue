@@ -8,16 +8,10 @@ const loginPassword = ref("");
 const hasIdError = ref("");
 const goVibrateAnimation = ref("");
 
-auth.onAuthStateChanged(async (user) => {
-  console.log(user);
+const router = useRouter();
 
-  if (user == null) {
-    return;
-  }
-
-  auth.signOut().then(() => {
-    console.log("success");
-  });
+definePageMeta({
+  middleware: ["admin"],
 });
 
 // method
@@ -30,7 +24,8 @@ const login = () => {
   auth
     .signInWithEmailAndPassword(loginId.value, loginPassword.value)
     .then((result) => {
-      console.log(result);
+      router.push("/adminPage");
+      return;
     })
     .catch((err) => {
       textError();
