@@ -1,12 +1,15 @@
 <script setup>
-import { auth, db } from "~/firebase/firebase";
+import { auth, db, rdb } from "~/firebase/firebase";
 
 // store
 const store = adminStore();
 
 let uid = store.uid;
 const list = ref(null);
+
 const selected = ref("");
+
+const questionList = reactive({});
 
 // method
 // adminが作成したgroupを全取得
@@ -58,8 +61,8 @@ const getAllGroupId = () => {
   return arr.map((value) => value["id"]);
 };
 
-// ユーザーが選択したIDに当てはまるユーザー名を取得
-const getSelectedName = () => {
+// ユーザーが選択したIDに当てはまるユーザー名と質問を取得
+const getSelectedNameAndQuestionList = () => {
   if (selected.value === "" || list.value === "") {
     return;
   }
@@ -67,6 +70,17 @@ const getSelectedName = () => {
   const arr = list.value.filter((value) => value["id"] === selected.value);
 
   return arr[0].name;
+};
+
+// 質問を取得
+const getQuestionList = () => {
+  rdb
+    .ref(selected.value)
+    .once("value")
+    .then((snapshots) => {
+      const value = Object.values(snapshots.val());
+      console.log(value.value);
+    });
 };
 
 // ログアウト処理 -> 管理者ログインページに遷移
@@ -85,6 +99,7 @@ const logout = () => {
       <select
         class="w-[300px] py-2 pl-2 rounded-lg text-lg border-gray-100 border-2 shadow-sm mt outline-none cursor-pointer"
         v-model="selected"
+        @change="getQuestionList()"
       >
         <option disabled value="">宛先を選んでください</option>
         <option v-for="id in getAllGroupId()" key="id">{{ id }}</option>
@@ -106,17 +121,32 @@ const logout = () => {
         <h2
           class="font-bold text-4xl w-full border-b-2 pb-2 font-cormorant drop-shadow-md"
         >
-          UserName ~
+          User Name
         </h2>
         <p
-          v-for="name in getSelectedName()"
+          v-for="name in getSelectedNameAndQuestionList()"
           key="name"
           class="py-2 border-b-2 text-xl"
         >
           {{ name }}
         </p>
       </section>
-      <section class="w-[45%] border-2 h-[700px] bg-white shadow"></section>
+      <section
+        class="w-[45%] border-2 h-[700px] bg-white shadow flex flex-col gap-y-1 p-2"
+      >
+        <h2
+          class="font-bold text-4xl w-full border-b-2 pb-2 font-cormorant drop-shadow-md"
+        >
+          Question List
+        </h2>
+        <p
+          v-for="list in questionList"
+          key="val"
+          class="py-2 border-b-2 text-xl"
+        >
+          {{ list }}
+        </p>
+      </section>
     </div>
   </div>
 </template>
