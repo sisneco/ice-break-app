@@ -9,7 +9,7 @@ const list = ref(null);
 
 const selected = ref("");
 
-const questionList = reactive({});
+const questionList = ref([]);
 
 // method
 // adminが作成したgroupを全取得
@@ -79,7 +79,10 @@ const getQuestionList = () => {
     .once("value")
     .then((snapshots) => {
       const value = Object.values(snapshots.val());
-      console.log(value.value);
+
+      console.log(value);
+
+      questionList.value = value;
     });
 };
 
@@ -115,7 +118,7 @@ const logout = () => {
     </div>
 
     <div class="w-full mt-4 flex justify-around">
-      <section
+      <table
         class="w-[45%] border-2 h-[700px] bg-white shadow flex flex-col gap-y-1 p-2"
       >
         <h2
@@ -123,14 +126,19 @@ const logout = () => {
         >
           User Name
         </h2>
-        <p
+        <tr
           v-for="name in getSelectedNameAndQuestionList()"
           key="name"
-          class="py-2 border-b-2 text-xl"
+          class="py-2 border-b-2 text-xl w-full"
         >
-          {{ name }}
-        </p>
-      </section>
+          <td class="w-[100px]">
+            {{ name }}
+          </td>
+          <td class="w-[100px]">
+            <button>削除</button>
+          </td>
+        </tr>
+      </table>
       <section
         class="w-[45%] border-2 h-[700px] bg-white shadow flex flex-col gap-y-1 p-2"
       >
@@ -144,7 +152,7 @@ const logout = () => {
           key="val"
           class="py-2 border-b-2 text-xl"
         >
-          {{ list }}
+          宛先： {{ list.name }} コメント： {{ list.text }}
         </p>
       </section>
     </div>
