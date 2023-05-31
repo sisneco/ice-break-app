@@ -94,7 +94,7 @@ const textError = () => {
         />
 
         <button
-          class="bg-orange-300 py-4 rounded-full mt-4 text-2xl flex justify-center items-center relative text-white"
+          class="bg-orange-300 hover:bg-orange-400 py-4 rounded-full mt-4 text-2xl flex justify-center items-center relative text-white"
           @click="login()"
         >
           ログイン

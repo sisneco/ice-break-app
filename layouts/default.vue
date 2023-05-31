@@ -1,7 +1,7 @@
 <template>
   <div class="md:flex md:w-screen md:flex-col overflow-hidden bg">
     <div
-      class="bg-sky-100 fixed bottom-0 left-0 w-screen md:w-screen h-[75px] md:static md:shadow-md z-50"
+      class="bg-sky-200 fixed bottom-0 left-0 w-screen md:w-screen h-[75px] md:static md:shadow-md z-50"
     >
       <ul
         class="flex justify-center flex-1 w-full items-center h-full md:items-start md:pl-2 md:justify-start md:w-full md:gap-x-8"
