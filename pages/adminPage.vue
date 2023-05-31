@@ -5,13 +5,25 @@ import { auth, db, rdb } from "~/firebase/firebase";
 const store = adminStore();
 
 let uid = store.uid;
-const list = ref(null);
+const groupList = ref(null); // 管理者の全グループIDリスト
+const selectedId = ref(""); // 管理者の選択しているID
+const questionList = ref([]); // 質問リスト
+const userName = ref(""); // 追加する人の名前
 
-const selected = ref("");
-
-const questionList = ref([]);
+const nameList = ref("");
 
 // method
+
+const addUserName = () => {
+  if (userName.value === "" || selectedId.value === "") {
+    return;
+  }
+
+  nameList.value.push(userName.value);
+
+  db.collection("groups").doc(selectedId).update(nameList.value);
+};
+
 // adminが作成したgroupを全取得
 const getGroupIdList = async () => {
   const querySnapshot = await db
@@ -28,7 +40,7 @@ const getGroupIdList = async () => {
     arr.push(tmp);
   });
 
-  list.value = arr;
+  groupList.value = arr;
 };
 
 // adminのUIDを取得する
@@ -52,7 +64,7 @@ if (uid === "") {
 
 // ログインユーザーが登録しているグループIDを全件取得
 const getAllGroupId = () => {
-  const arr = list.value;
+  const arr = groupList.value;
 
   if (arr === null) {
     return "";
@@ -62,12 +74,16 @@ const getAllGroupId = () => {
 };
 
 // ユーザーが選択したIDに当てはまるユーザー名と質問を取得
-const getSelectedNameAndQuestionList = () => {
-  if (selected.value === "" || list.value === "") {
+const getSelectedNameList = () => {
+  if (selectedId.value === "" || groupList.value === "") {
     return;
   }
 
-  const arr = list.value.filter((value) => value["id"] === selected.value);
+  const arr = groupList.value.filter(
+    (value) => value["id"] === selectedId.value
+  );
+
+  nameList.value = arr[0].name;
 
   return arr[0].name;
 };
@@ -75,7 +91,7 @@ const getSelectedNameAndQuestionList = () => {
 // 質問を取得
 const getQuestionList = () => {
   rdb
-    .ref(selected.value)
+    .ref(selectedId.value)
     .once("value")
     .then((snapshots) => {
       const value = Object.values(snapshots.val());
@@ -101,7 +117,7 @@ const logout = () => {
     <div class="w-full border-b-2 py-4">
       <select
         class="w-[300px] py-2 pl-2 rounded-lg text-lg border-gray-100 border-2 shadow-sm mt outline-none cursor-pointer"
-        v-model="selected"
+        v-model="selectedId"
         @change="getQuestionList()"
       >
         <option disabled value="">宛先を選んでください</option>
@@ -121,22 +137,32 @@ const logout = () => {
       <table
         class="w-[45%] border-2 h-[700px] bg-white shadow flex flex-col gap-y-1 p-2"
       >
-        <h2
-          class="font-bold text-4xl w-full border-b-2 pb-2 font-cormorant drop-shadow-md"
-        >
-          User Name
-        </h2>
+        <div class="flex border-b-2 pb-2 items-center gap-x-4">
+          <h2 class="font-bold text-4xl font-cormorant inline">User Name</h2>
+          <input
+            v-model="userName"
+            type="text"
+            class="w-[350px] py-4 pl-2 rounded-lg border-gray-100 border-2 shadow-sm outline-none none"
+            placeholder="追加するユーザー名を入力してください"
+          />
+
+          <AdminButton
+            :class="{ 'disabled:bg-gray-100': userName === '' }"
+            @clickEvent="addUserName()"
+          >
+            追加
+          </AdminButton>
+        </div>
         <tr
-          v-for="name in getSelectedNameAndQuestionList()"
+          v-for="name in getSelectedNameList()"
           key="name"
-          class="py-2 border-b-2 text-xl w-full"
+          class="py-2 border-b-2 text-xl w-full flex gap-4 items-center"
         >
-          <td class="w-[100px]">
+          <span class="w-[150px] text-center">
             {{ name }}
-          </td>
-          <td class="w-[100px]">
-            <button>削除</button>
-          </td>
+          </span>
+          <AdminButton> 編集 </AdminButton>
+          <AdminButton> 削除 </AdminButton>
         </tr>
       </table>
       <section
