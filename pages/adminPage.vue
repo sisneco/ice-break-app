@@ -14,6 +14,7 @@ const nameList = ref("");
 
 // method
 
+// ユーザー追加
 const addUserName = () => {
   if (userName.value === "" || selectedId.value === "") {
     return;
@@ -21,8 +22,15 @@ const addUserName = () => {
 
   nameList.value.push(userName.value);
 
-  db.collection("groups").doc(selectedId).update(nameList.value);
+  const groupsRef = db.collection("groups").doc(selectedId.value);
+
+  groupsRef.update({
+    admin: uid,
+    name: nameList.value,
+  });
 };
+
+// ユーザー削除
 
 // adminが作成したgroupを全取得
 const getGroupIdList = async () => {
@@ -111,6 +119,7 @@ const logout = () => {
 </script>
 
 <template>
+  <ConfirmDialog></ConfirmDialog>
   <div
     class="flex flex-col w-screen items-center h-[calc(calc(100vh_-_75px))] px-8 font-notojp"
   >
