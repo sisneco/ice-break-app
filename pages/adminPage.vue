@@ -1,5 +1,6 @@
 <script setup>
 import { auth, db, rdb } from "~/firebase/firebase";
+import ConfirmDialog from "~/components/ConfirmDialog.vue";
 
 // store
 const store = adminStore();
@@ -12,7 +13,17 @@ const userName = ref(""); // 追加する人の名前
 
 const nameList = ref("");
 
+// ダイアログコンポーネント関連
+const dialogText = ref("");
+const confirmDialog = ref();
+
+dialogText.value = "こんにちは！";
+
 // method
+const onButtonDelete = () => {
+  console.log("hoge");
+  confirmDialog.value.visibleDialog();
+};
 
 // ユーザー追加
 const addUserName = () => {
@@ -119,10 +130,14 @@ const logout = () => {
 </script>
 
 <template>
-  <ConfirmDialog></ConfirmDialog>
   <div
     class="flex flex-col w-screen items-center h-[calc(calc(100vh_-_75px))] px-8 font-notojp"
   >
+    <ConfirmDialog
+      :text="dialogText"
+      buttonText="削除"
+      ref="confirmDialog"
+    ></ConfirmDialog>
     <div class="w-full border-b-2 py-4">
       <select
         class="w-[300px] py-2 pl-2 rounded-lg text-lg border-gray-100 border-2 shadow-sm mt outline-none cursor-pointer"
@@ -171,7 +186,7 @@ const logout = () => {
             {{ name }}
           </span>
           <AdminButton> 編集 </AdminButton>
-          <AdminButton> 削除 </AdminButton>
+          <AdminButton @clickEvent="onButtonDelete()"> 削除 </AdminButton>
         </tr>
       </table>
       <section
