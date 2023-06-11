@@ -1,9 +1,26 @@
+<script setup>
+import { storeToRefs } from "pinia";
+
+const cStore = storeToRefs(commonStore());
+
+const isAnimation = ref(false);
+
+watch(isAnimation.value, () => {});
+
+watch(cStore.isAnimation, () => {
+  window.setTimeout(() => {
+    commonStore().setIsAnimaiton(false);
+  }, 2000);
+});
+</script>
+
 <template>
   <div class="md:flex md:w-screen md:flex-col overflow-hidden bg">
     <div
       class="bg-sky-200 fixed bottom-0 left-0 w-screen md:w-screen h-[75px] md:static md:shadow-md z-50"
     >
       <ul
+        :class="{ 'pointer-events-none': cStore.isAnimation.value }"
         class="flex justify-center flex-1 w-full items-center h-full md:items-start md:pl-2 md:justify-start md:w-full md:gap-x-8"
       >
         <h1
@@ -12,40 +29,25 @@
           IceBreakApp
         </h1>
         <NavigationBarTagLi>
-          <NuxtLink
-            to="/"
-            class="w-full h-full flex items-center justify-center"
-          >
-            <font-awesome-icon :icon="['fas', 'house']" class="text-2xl" />
-            <span class="hidden md:inline md:pl-2 text-2xl font-serif">
-              Home
-            </span>
-          </NuxtLink>
+          <NuxtLinkComponent
+            link="/"
+            text="Home"
+            icon="house"
+          ></NuxtLinkComponent>
         </NavigationBarTagLi>
         <NavigationBarTagLi>
-          <NuxtLink
-            to="/question"
-            class="w-full h-full flex items-center justify-center"
-          >
-            <font-awesome-icon :icon="['fas', 'ear-listen']" class="text-2xl" />
-            <span class="hidden md:inline md:pl-2 text-2xl font-serif"
-              >Question
-            </span>
-          </NuxtLink>
+          <NuxtLinkComponent
+            link="/question"
+            text="Question"
+            icon="ear-listen"
+          ></NuxtLinkComponent>
         </NavigationBarTagLi>
         <NavigationBarTagLi>
-          <NuxtLink
-            to="/admin"
-            class="w-full h-full flex items-center justify-center"
-          >
-            <font-awesome-icon
-              :icon="['fas', 'person-circle-check']"
-              class="text-2xl"
-            />
-            <span class="hidden md:inline md:pl-2 text-2xl font-serif">
-              Admin
-            </span>
-          </NuxtLink>
+          <NuxtLinkComponent
+            link="/admin"
+            text="Admin"
+            icon="person-circle-check"
+          ></NuxtLinkComponent>
         </NavigationBarTagLi>
       </ul>
     </div>

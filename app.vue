@@ -7,7 +7,7 @@
 <style>
 .layout-enter-active,
 .layout-leave-active {
-  transition: all 0.8s;
+  transition: all 0.75s;
 }
 .layout-enter-from,
 .layout-leave-to {
