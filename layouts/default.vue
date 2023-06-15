@@ -5,8 +5,6 @@ const cStore = storeToRefs(commonStore());
 
 const isAnimation = ref(false);
 
-watch(isAnimation.value, () => {});
-
 watch(cStore.isAnimation, () => {
   window.setTimeout(() => {
     commonStore().setIsAnimaiton(false);

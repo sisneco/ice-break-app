@@ -1,14 +1,21 @@
 <script setup>
 const props = defineProps({
   text: String,
-  buttonText: String,
+  okButtonText: String,
+  cancelButtonText: String,
 });
 
 const isVisible = ref(false);
 
-const visibleDialog = () => {
-  console.log("hoge");
+const val = ref("");
+
+const visibleDialog = (param) => {
   isVisible.value = true;
+  val.value = param;
+};
+
+const hideDialog = () => {
+  isVisible.value = false;
 };
 
 defineExpose({
@@ -21,14 +28,24 @@ defineExpose({
     <div
       class="w-[40vw] h-[40vh] bg-white z-10 flex flex-col justify-center items-center"
     >
-      <h2>{{ text }}</h2>
-      <button
-        @click="$emit('clickEvent')"
-        id="btn"
-        class="text-gray-500 text-sm font-bold w-[100px] rounded py-2 shadow bg-gray-300 hover:bg-gray-400"
-      >
-        {{ buttonText }}
-      </button>
+      <h2 class="text-2xl">{{ text }}</h2>
+      <div class="flex gap-x-4 mt-8">
+        <button
+          @click="hideDialog()"
+          id="btn"
+          class="text-gray-500 text-sm font-bold w-[100px] rounded py-2 shadow bg-red-300 hover:bg-red-400"
+        >
+          {{ cancelButtonText }}
+        </button>
+
+        <button
+          @click="$emit('okEvent')"
+          id="btn"
+          class="text-gray-500 text-sm font-bold w-[100px] rounded py-2 shadow bg-sky-300 hover:bg-sky-400"
+        >
+          {{ okButtonText }}
+        </button>
+      </div>
     </div>
   </div>
 </template>

@@ -15,14 +15,18 @@ const nameList = ref("");
 
 // ダイアログコンポーネント関連
 const dialogText = ref("");
-const confirmDialog = ref();
+const deleteDialog = ref();
+
+const deleteName = ref("");
 
 dialogText.value = "こんにちは！";
 
 // method
-const onButtonDelete = () => {
-  console.log("hoge");
-  confirmDialog.value.visibleDialog();
+const onButtonDelete = (name) => {
+  dialogText.value = name + "さんを削除しますか？";
+  deleteName.value = name;
+
+  deleteDialog.value.visibleDialog();
 };
 
 // ユーザー追加
@@ -40,8 +44,6 @@ const addUserName = () => {
     name: nameList.value,
   });
 };
-
-// ユーザー削除
 
 // adminが作成したgroupを全取得
 const getGroupIdList = async () => {
@@ -107,18 +109,26 @@ const getSelectedNameList = () => {
   return arr[0].name;
 };
 
+function deleteUser() {
+  const delName = deleteName.value;
+
+  nameList.value = nameList.value.filter((v) => v != delName);
+
+  const groupsRef = db.collection("groups").doc(selectedId.value);
+
+  groupsRef.update({
+    admin: uid,
+    name: nameList.value,
+  });
+}
+
 // 質問を取得
 const getQuestionList = () => {
-  rdb
-    .ref(selectedId.value)
-    .once("value")
-    .then((snapshots) => {
-      const value = Object.values(snapshots.val());
+  rdb.ref(selectedId.value).on("value", (snapshots) => {
+    const value = Object.values(snapshots.val());
 
-      console.log(value);
-
-      questionList.value = value;
-    });
+    questionList.value = value;
+  });
 };
 
 // ログアウト処理 -> 管理者ログインページに遷移
@@ -135,8 +145,10 @@ const logout = () => {
   >
     <ConfirmDialog
       :text="dialogText"
-      buttonText="削除"
-      ref="confirmDialog"
+      okButtonText="削除"
+      cancelButtonText="キャンセル"
+      @okEvent="deleteUser()"
+      ref="deleteDialog"
     ></ConfirmDialog>
     <div class="w-full border-b-2 py-4">
       <select
@@ -186,7 +198,7 @@ const logout = () => {
             {{ name }}
           </span>
           <AdminButton> 編集 </AdminButton>
-          <AdminButton @clickEvent="onButtonDelete()"> 削除 </AdminButton>
+          <AdminButton @clickEvent="onButtonDelete(name)"> 削除 </AdminButton>
         </tr>
       </table>
       <section
